@@ -30,11 +30,16 @@ def read_root():
 
 @app.get("/api/todo")
 async def get_todo():
-    return 1
+    response = await fetch_all_todos()
+    return response
 
-@app.get("/api/todo{id}")
-async def get_todo_by_id(id):
-    return 1
+@app.get("/api/todo/{title}", response_model=Todo)
+async def get_todo_by_id(title):
+    response = fetch_one_todo(title)
+    if response:
+        return response
+    raise HTTPException(404, f"There is no TODO item with this title: {title}")
+
 
 #POST
 @app.post("/api/todo")
